@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Check, Zap, Star, X } from 'lucide-react'
 import axios from 'axios'
 import { BaseUrl } from '../config/BaseUrl'
+import CryptoPayment from '../components/payments/CryptoPayment'
 
 const plans = [
   {
@@ -102,6 +103,12 @@ export default function ModernPricing() {
   }
   const handleSubscribe = async (provider) => {
     if (!selectedPlan) return;
+
+    if (provider === 'crypto') {
+      setPaymentMethod('crypto');
+      return;
+    }
+
     console.log(" window.location.origin", window.location.origin)
     try {
       const res = await axios.post(`${BaseUrl}/billing/subscribe`, {
@@ -297,30 +304,16 @@ export default function ModernPricing() {
             {!paymentMethod ? (
               <div>
                 <h3 className="text-2xl font-bold mb-6">Choose Payment Method</h3>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <button
-                    onClick={() => handleSubscribe("stripe")}
-                    className="group bg-white/[0.03] border border-white/10 rounded-2xl p-8 hover:bg-white/[0.05] hover:border-white/20 transition-all text-left"
-                  >
-                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">💳</div>
-                    <div className="font-bold text-lg mb-1">Card Payment</div>
-                    <div className="text-sm text-gray-400">Stripe</div>
-                  </button>
-                  <button
-                    onClick={() => handleSubscribe("razorpay")}
-                    className="group bg-white/[0.03] border border-white/10 rounded-2xl p-8 hover:bg-white/[0.05] hover:border-white/20 transition-all text-left"
-                  >
-                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">📱</div>
-                    <div className="font-bold text-lg mb-1">UPI Payment</div>
-                    <div className="text-sm text-gray-400">Razorpay (India)</div>
-                  </button>
+                <div className="grid md:grid-cols-1 gap-4">
                   <button
                     onClick={() => handleSubscribe("crypto")}
-                    className="group bg-white/[0.03] border border-white/10 rounded-2xl p-8 hover:bg-white/[0.05] hover:border-white/20 transition-all text-left"
+                    className="group bg-white/[0.03] border border-white/10 rounded-2xl p-8 hover:bg-white/[0.05] hover:border-white/20 transition-all text-left flex items-center gap-6"
                   >
-                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">₿</div>
-                    <div className="font-bold text-lg mb-1">Crypto Payment</div>
-                    <div className="text-sm text-gray-400">Coinbase/NOWPayments</div>
+                    <div className="text-5xl group-hover:scale-110 transition-transform">₿</div>
+                    <div>
+                      <div className="font-bold text-lg mb-1">Crypto Payment</div>
+                      <div className="text-sm text-gray-400">Coinbase/NOWPayments</div>
+                    </div>
                   </button>
                 </div>
               </div>
@@ -333,11 +326,20 @@ export default function ModernPricing() {
                   <span>←</span>
                   <span>Back to payment methods</span>
                 </button>
-                <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-8">
-                  <p className="text-center text-gray-400">
-                    Payment processing for <span className="text-white font-bold">{paymentMethod}</span> would be integrated here
-                  </p>
-                </div>
+                {paymentMethod === 'crypto' ? (
+                  <CryptoPayment
+                    plan={selectedPlan}
+                    trial={false}
+                    onSuccess={handlePaymentSuccess}
+                    onCancel={() => setPaymentMethod(null)}
+                  />
+                ) : (
+                  <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-8">
+                    <p className="text-center text-gray-400">
+                      Payment processing for <span className="text-white font-bold">{paymentMethod}</span> would be integrated here
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>

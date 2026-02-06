@@ -1,52 +1,68 @@
-// Create crypto payment endpoint (Coinbase Commerce / NOWPayments)
+import axios from 'axios';
+import { db } from '../../firebase.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' })
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { amount, currency, planId, userId, trial } = req.body
+    const { amount, currency = 'USD', planId, userId, trial } = req.body;
 
-    // Example for Coinbase Commerce
-    const coinbaseResponse = await fetch('https://api.commerce.coinbase.com/charges', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CC-Api-Key': process.env.COINBASE_COMMERCE_API_KEY,
-        'X-CC-Version': '2018-03-22'
-      },
-      body: JSON.stringify({
-        name: `Tradorr ${planId} Subscription`,
-        description: `Monthly subscription for ${planId} plan`,
-        local_price: {
-          amount: amount.toString(),
-          currency: currency || 'USD'
-        },
-        pricing_type: 'fixed_price',
-        metadata: {
-          planId: planId,
-          userId: userId,
-          trial: trial ? 'true' : 'false'
-        },
-        redirect_url: `${process.env.VERCEL_URL || 'http://localhost:3000'}/dashboard`,
-        cancel_url: `${process.env.VERCEL_URL || 'http://localhost:3000'}/pricing`
-      })
-    })
+    console.log('Create Payment Request:', req.body); // DEBUG LOG
 
-    const data = await coinbaseResponse.json()
-
-    if (coinbaseResponse.ok) {
-      res.status(200).json({
-        paymentUrl: data.data.hosted_url,
-        chargeId: data.data.id
-      })
-    } else {
-      throw new Error(data.error?.message || 'Failed to create payment')
+    if (!amount || !planId || !userId) {
+      console.log('Missing fields:', { amount, planId, userId }); // DEBUG LOG
+      return res.status(400).json({ error: 'Missing required fields' });
     }
+
+    // Determine valid callback URL (NOWPayments rejects localhost)
+    let callbackUrl = `${process.env.VITE_ANALYZER_API_URL?.replace('/api/candlestick', '')}/api/crypto/webhook`;
+    if (callbackUrl.includes('localhost')) {
+      callbackUrl = 'https://chartmindai-new.onrender.com/api/crypto/webhook';
+    }
+
+    // Create invoice via NOWPayments
+    console.log('Calling NOWPayments API...'); // DEBUG LOG
+    const response = await axios.post(
+      'https://api.nowpayments.io/v1/invoice',
+      {
+        price_amount: amount,
+        price_currency: currency, // The currency of the price_amount
+        ipn_callback_url: callbackUrl,
+        order_description: `Subscription for ${planId} (${trial ? 'Trial' : 'Standard'})`,
+        order_id: `${userId}_${Date.now()}`, // Unique order ID
+        success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/success`,
+        cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/cancel`,
+      },
+      {
+        headers: {
+          'x-api-key': process.env.NOWPAYMENTS_API_KEY,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    console.log('NOWPayments Success:', response.data); // DEBUG LOG
+    const { id: invoiceId, invoice_url: paymentUrl } = response.data;
+
+    // Save transaction to Firebase
+    console.log(`Saving to Firebase: transactions/${invoiceId}`); // DEBUG LOG
+    await db.collection('transactions').doc(invoiceId.toString()).set({
+      userId,
+      planId,
+      amount,
+      currency,
+      status: 'pending', // pending, confirmed, failed
+      provider: 'nowpayments',
+      createdAt: new Date().toISOString(),
+      invoiceId,
+      trial: !!trial,
+    });
+
+    res.status(200).json({ paymentUrl, invoiceId });
   } catch (error) {
-    console.error('Error creating crypto payment:', error)
-    res.status(500).json({ error: error.message })
+    console.error('Create Payment Error:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Failed to create payment invoice' });
   }
 }
-

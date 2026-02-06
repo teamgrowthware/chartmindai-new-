@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useSubscription } from '../../context/SubscriptionContext'
 import toast from 'react-hot-toast'
 import axios from 'axios'
+import { BaseUrl } from '../../config/BaseUrl'
 
 export default function CryptoPayment({ plan, trial, onSuccess, onCancel }) {
   const { currentUser } = useAuth()
@@ -18,7 +19,7 @@ export default function CryptoPayment({ plan, trial, onSuccess, onCancel }) {
   const initializePayment = async () => {
     setLoading(true)
     try {
-      const response = await axios.post('/api/crypto/create-payment', {
+      const response = await axios.post(`${BaseUrl}/api/crypto/create-payment`, {
         amount: plan.price,
         currency: 'USD',
         planId: plan.id,
@@ -29,7 +30,9 @@ export default function CryptoPayment({ plan, trial, onSuccess, onCancel }) {
       setPaymentUrl(response.data.paymentUrl)
     } catch (error) {
       console.error('Payment initialization error:', error)
-      toast.error('Failed to initialize payment. Please try again.')
+      const errorMsg = error.response?.data?.error || error.message || 'Unknown error'
+      alert(`Payment Error: ${errorMsg}`)
+      toast.error(`Failed to initialize payment: ${errorMsg}`)
     } finally {
       setLoading(false)
     }
@@ -38,19 +41,19 @@ export default function CryptoPayment({ plan, trial, onSuccess, onCancel }) {
   const handlePayment = () => {
     if (paymentUrl) {
       window.open(paymentUrl, '_blank')
-      
+
       // Poll for payment status (in production, use webhooks)
       const checkInterval = setInterval(async () => {
         try {
-          const response = await axios.get(`/api/crypto/payment-status/${currentUser.uid}`)
-          
+          const response = await axios.get(`${BaseUrl}/api/crypto/payment-status/${currentUser.uid}`)
+
           if (response.data.status === 'completed') {
             clearInterval(checkInterval)
-            
+
             // Update subscription
             const endDate = new Date()
             endDate.setMonth(endDate.getMonth() + 1)
-            
+
             const trialEndDate = trial ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) : null
 
             await updateSubscription({
@@ -82,10 +85,10 @@ export default function CryptoPayment({ plan, trial, onSuccess, onCancel }) {
           Pay with Bitcoin, Ethereum, or other cryptocurrencies
         </p>
         <div className="text-2xl font-bold">
-          ${(plan.price / 83).toFixed(2)} USD
+          ${plan.price} USD
         </div>
         <p className="text-sm text-gray-500 mt-2">
-          (Approx. ₹{plan.price})
+          (Approx. ₹{(plan.price * 83).toFixed(2)})
         </p>
       </div>
 

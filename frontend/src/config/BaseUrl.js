@@ -1,1 +1,1 @@
-export const BaseUrl = "https://chartmindai-new.onrender.com";
+export const BaseUrl = "http://localhost:5000";

@@ -19,6 +19,8 @@ import TermsAndConditions from "./pages/TermsandCondition";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import MainChartAnalysis from "./pages/ChartAnalyis/MainChartAnalysis";
 
+import Transactions from "./pages/Transactions";
+
 function ProtectedRoute({ children }) {
   const { currentUser } = useAuth();
   return currentUser ? children : <Navigate to="/login" />;
@@ -41,18 +43,19 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/termandcondition" element={<TermsAndConditions/>}/>
-              <Route path="/privacyandpolicy" element={<PrivacyPolicy/>}/>
-              <Route 
-                path="/dashboard" 
+              <Route path="/termandcondition" element={<TermsAndConditions />} />
+              <Route path="/privacyandpolicy" element={<PrivacyPolicy />} />
+              <Route
+                path="/dashboard"
                 element={
                   // <ProtectedRoute>
-                    <Dashboard />
+                  <Dashboard />
                   // </ProtectedRoute>
-                } 
+                }
               />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/chartAnalyis" element={<MainChartAnalysis />} />
+              <Route path="/transactions" element={<Transactions />} />
               <Route
                 path="/admin"
                 element={

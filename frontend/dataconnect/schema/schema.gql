@@ -1,0 +1,49 @@
+type User @table {
+  username: String!
+  email: String!
+  passwordHash: String!
+  createdAt: Timestamp!
+  fullName: String
+  profilePictureUrl: String
+  location: String
+}
+
+type Item @table {
+  title: String!
+  description: String!
+  price: Float!
+  createdAt: Timestamp!
+  status: String!
+  category: Category
+  condition: String
+  location: String
+  seller: User
+}
+
+type Image @table {
+  imageUrl: String!
+  createdAt: Timestamp!
+  order: Int
+  item: Item
+}
+
+type Category @table {
+  name: String!
+  createdAt: Timestamp!
+  description: String
+}
+
+type Watchlist @table(key: ["user", "item"]) {
+  createdAt: Timestamp!
+  user: User!
+  item: Item!
+}
+
+type Message @table {
+  content: String!
+  createdAt: Timestamp!
+  isRead: Boolean!
+  sender: User!
+  receiver: User!
+  item: Item
+}

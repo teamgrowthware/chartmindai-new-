@@ -1,0 +1,8 @@
+connectorId: example
+generate:
+  javascriptSdk:
+    - outputDir: ..\..\Tradeweb-main\src\dataconnect-generated
+      package: "@dataconnect/generated"
+      packageJsonDir: ..\..\Tradeweb-main
+      react: true
+      angular: false

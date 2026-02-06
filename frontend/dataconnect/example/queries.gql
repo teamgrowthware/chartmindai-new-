@@ -1,0 +1,57 @@
+mutation AddItemToWatchlist($userId: UUID!, $itemId: UUID!) @auth(level: USER) {
+  watchlist_insert(data: { userId: $userId, itemId: $itemId, createdAt_expr: "request.time" })
+}
+
+query GetItemsInUserWatchlist($userId: UUID!) @auth(level: USER) {
+  watchlists(where: { userId: { eq: $userId } }) {
+    item {
+      id
+      title
+      description
+      price
+      location
+      condition
+      status
+      category {
+        id
+        name
+      }
+      images_on_item {
+        imageUrl
+        order
+      }
+    }
+  }
+}
+
+mutation CreateNewItem(
+  $categoryId: UUID
+  $condition: String
+  $description: String!
+  $location: String
+  $price: Float!
+  $status: String!
+  $title: String!
+) @auth(level: USER) {
+  item_insert(
+    data: {
+      categoryId: $categoryId
+      condition: $condition
+      createdAt_expr: "request.time"
+      description: $description
+      location: $location
+      price: $price
+      status: $status
+      title: $title
+      sellerId_expr: "auth.uid"
+    }
+  )
+}
+
+query GetCategoryList @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  categories {
+    id
+    name
+    description
+  }
+}

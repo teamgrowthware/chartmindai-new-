@@ -1,0 +1,100 @@
+mutation CreateDemoData @transaction @auth(level: PUBLIC, insecureReason: "This mutation is safe to expose to the public as it populates the database with initial data.") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      username: "demouser1",
+      email: "demouser1@example.com",
+      passwordHash: "somehash1",
+      createdAt: "2024-01-01T00:00:00Z"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      username: "demouser2",
+      email: "demouser2@example.com",
+      passwordHash: "somehash2",
+      createdAt: "2024-01-01T00:00:00Z"
+    }
+  ])
+  category_insertMany(data: [
+    {
+      id: "650e8400-e29b-41d4-a716-446655440000",
+      name: "Electronics",
+      description: "Electronic items",
+      createdAt: "2024-01-01T00:00:00Z"
+    },
+    {
+      id: "650e8400-e29b-41d4-a716-446655440001",
+      name: "Books",
+      description: "Books of all genres",
+      createdAt: "2024-01-01T00:00:00Z"
+    }
+  ])
+  item_insertMany(data: [
+    {
+      id: "750e8400-e29b-41d4-a716-446655440000",
+      title: "Laptop",
+      description: "High performance laptop",
+      status: "available",
+      price: 1200.00,
+      categoryId: "650e8400-e29b-41d4-a716-446655440000",
+      sellerId: "550e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-01-01T00:00:00Z"
+    },
+    {
+      id: "750e8400-e29b-41d4-a716-446655440001",
+      title: "The Lord of the Rings",
+      description: "A classic fantasy book",
+      status: "available",
+      price: 25.00,
+      categoryId: "650e8400-e29b-41d4-a716-446655440001",
+      sellerId: "550e8400-e29b-41d4-a716-446655440001",
+      createdAt: "2024-01-01T00:00:00Z"
+    }
+  ])
+  image_insertMany(data: [
+    {
+      id: "850e8400-e29b-41d4-a716-446655440000",
+      imageUrl: "http://example.com/laptop.jpg",
+      itemId: "750e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-01-01T00:00:00Z"
+    },
+    {
+      id: "850e8400-e29b-41d4-a716-446655440001",
+      imageUrl: "http://example.com/lotr.jpg",
+      itemId: "750e8400-e29b-41d4-a716-446655440001",
+      createdAt: "2024-01-01T00:00:00Z"
+    }
+  ])
+   message_insertMany(data: [
+    {
+      id: "950e8400-e29b-41d4-a716-446655440000",
+      senderId: "550e8400-e29b-41d4-a716-446655440000",
+      receiverId: "550e8400-e29b-41d4-a716-446655440001",
+      itemId: "750e8400-e29b-41d4-a716-446655440000",
+      content: "Interested in the laptop",
+      isRead: false,
+      createdAt: "2024-01-01T00:00:00Z"
+    },
+    {
+      id: "950e8400-e29b-41d4-a716-446655440001",
+      senderId: "550e8400-e29b-41d4-a716-446655440001",
+      receiverId: "550e8400-e29b-41d4-a716-446655440000",
+      itemId: "750e8400-e29b-41d4-a716-446655440001",
+      content: "Interested in the book",
+      isRead: false,
+      createdAt: "2024-01-01T00:00:00Z"
+    }
+  ])
+  watchlist_insertMany(data: [
+    {
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      itemId: "750e8400-e29b-41d4-a716-446655440001",
+      createdAt: "2024-01-01T00:00:00Z"
+    },
+        {
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      itemId: "750e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-01-01T00:00:00Z"
+    }
+  ])
+}

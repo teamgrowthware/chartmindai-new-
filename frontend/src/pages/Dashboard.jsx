@@ -1,13 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-
-// Mock hooks for demo
-const useAuth = () => ({ currentUser: { email: 'trader@example.com', uid: 'abc123def456ghi789jkl012' } });
-const useSubscription = () => ({
-  subscription: { isActive: true, plan: 'Pro', endDate: '2025-12-31' },
-  loading: false
-});
+import { useAuth } from '../context/AuthContext';
+import { useSubscription } from '../context/SubscriptionContext';
 
 const FiTrendingUp = ({ className }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -77,13 +73,14 @@ const cardHoverVariants = {
 export default function Dashboard() {
   const { currentUser } = useAuth();
   const { subscription, loading } = useSubscription();
+  const navigate = useNavigate();
   const fullAnalyzerUrl = 'https://your-analyzer-app.com';
 
   const handleOpenAnalyzer = () => {
     if (subscription?.isActive) {
       window.open(fullAnalyzerUrl, '_blank');
     } else {
-      window.location.href = '/pricing';
+      navigate('/pricing');
     }
   };
 
@@ -213,24 +210,22 @@ export default function Dashboard() {
                               }`}
                           />
                           <span className="text-xl font-bold text-white">
-                            {subscription?.isActive ? 'Active' : 'Inactive'}
+                            {subscription?.isActive ? 'Active' : 'Free'}
                           </span>
                         </motion.div>
                       )}
                     </div>
-                    {subscription?.isActive && (
-                      <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="text-right bg-slate-800/50 rounded-2xl p-4 backdrop-blur-sm"
-                      >
-                        <p className="text-sm text-slate-400 mb-1">Plan</p>
-                        <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-                          {subscription?.plan || 'Pro'}
-                        </p>
-                      </motion.div>
-                    )}
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="text-right bg-slate-800/50 rounded-2xl p-4 backdrop-blur-sm"
+                    >
+                      <p className="text-sm text-slate-400 mb-1">Plan</p>
+                      <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+                        {subscription?.isActive ? subscription?.plan : 'Free'}
+                      </p>
+                    </motion.div>
                   </div>
 
                   {subscription?.isActive && subscription?.endDate && (
@@ -255,6 +250,7 @@ export default function Dashboard() {
                       className="mt-4"
                     >
                       <motion.button
+                        onClick={() => navigate('/pricing')}
                         whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(59, 130, 246, 0.5)" }}
                         whileTap={{ scale: 0.95 }}
                         className="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl font-bold text-lg shadow-lg shadow-cyan-500/50 transition-all"
@@ -332,7 +328,7 @@ export default function Dashboard() {
                       View your complete payment history, invoices, and transaction status.
                     </p>
                     <motion.button
-                      onClick={() => window.location.href = '/transactions'}
+                      onClick={() => navigate('/transactions')}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="block w-full py-4 bg-slate-800/50 border border-slate-700 rounded-xl font-bold text-lg text-white hover:bg-slate-700/50 transition-all flex items-center justify-center space-x-2"

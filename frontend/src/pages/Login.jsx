@@ -21,7 +21,7 @@ export default function Login() {
     try {
       await login(email, password);
       // AuthContext handles state updates via onAuthStateChanged
-      alert("Login Successful!");
+
       navigate("/dashboard");
     } catch (error) {
       console.log("Login error:", error);

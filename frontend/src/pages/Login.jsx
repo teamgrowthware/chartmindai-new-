@@ -11,7 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -103,6 +103,25 @@ export default function Login() {
                   placeholder="••••••••"
                 />
               </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!email) return alert("Please enter your email first");
+                  try {
+                    await resetPassword(email);
+                    alert("Password reset email sent! Check your inbox.");
+                  } catch (e) {
+                    const msg = e.message.replace('Firebase: ', '');
+                    alert("Error: " + msg);
+                  }
+                }}
+                className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                Forgot Password?
+              </button>
             </div>
 
             {/* Sign In Button */}

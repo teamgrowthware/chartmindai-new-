@@ -6,6 +6,7 @@ export default {
   ],
   theme: {
     extend: {
+
       colors: {
         primary: {
           50: '#f0f9ff',
@@ -30,7 +31,19 @@ export default {
           700: '#334155',
           800: '#1e293b',
           900: '#0f172a',
-        }
+        },
+        // Ai-Trading-Analyzer Brand Colors
+        'brand-bg': '#0D1117',
+        'brand-surface': '#161B22',
+        'brand-border': '#30363D',
+        'brand-primary': '#58A6FF',
+        'brand-secondary': '#1F6FEB',
+        'brand-text-main': '#C9D1D9',
+        'brand-text-secondary': '#8B949E',
+        'brand-success': '#238636',
+        'brand-danger': '#DA3633',
+        'brand-success-light': 'rgba(35, 134, 54, 0.15)',
+        'brand-danger-light': 'rgba(218, 54, 51, 0.15)',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

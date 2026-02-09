@@ -74,14 +74,13 @@ export default function Dashboard() {
   const { currentUser } = useAuth();
   const { subscription, loading } = useSubscription();
   const navigate = useNavigate();
-  const fullAnalyzerUrl = 'https://your-analyzer-app.com';
-
   const handleOpenAnalyzer = () => {
-    if (subscription?.isActive) {
-      window.open(fullAnalyzerUrl, '_blank');
-    } else {
-      navigate('/pricing');
-    }
+    // For testing purposes, we are bypassing the subscription check
+    // if (subscription?.isActive) {
+    navigate('/full-analyzer');
+    // } else {
+    //   navigate('/pricing');
+    // }
   };
 
   return (

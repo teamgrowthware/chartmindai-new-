@@ -18,6 +18,7 @@ import Home from "./pages/Home/Home";
 import TermsAndConditions from "./pages/TermsandCondition";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import MainChartAnalysis from "./pages/ChartAnalyis/MainChartAnalysis";
+import AiAnalyzer from "./features/AiAnalyzer/AiAnalyzer";
 
 import Transactions from "./pages/Transactions";
 
@@ -55,6 +56,7 @@ function App() {
               />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/chartAnalyis" element={<MainChartAnalysis />} />
+              <Route path="/full-analyzer" element={<AiAnalyzer />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route
                 path="/admin"

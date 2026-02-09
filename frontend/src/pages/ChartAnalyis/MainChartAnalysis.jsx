@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { ImageUploader } from './Component/ImageUploader';
 import { AnalysisDisplay } from './Component/AnalysisDisplay';
-import { analyzeChart } from '../../services/geminiService';
+import { analyzeChart } from '../../features/AiAnalyzer/services/geminiService';
 import InitialStateDisplay from './Component/InitialStateDisplay';
 import Navbar from '../../components/Navbar';
 
@@ -51,7 +51,7 @@ const MainChartAnalysis = () => {
     setGroundingSources([]);
 
     try {
-        // Increment usage count
+      // Increment usage count
       const newCount = usageCount + 1;
       setUsageCount(newCount);
       sessionStorage.setItem('chartAnalysisCount', newCount.toString());
@@ -63,8 +63,8 @@ const MainChartAnalysis = () => {
       const { result, sources } = await analyzeChart(image.base64);
       setAnalysis(result);
       setGroundingSources(sources);
-      
-    
+
+
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'An unknown error occurred during analysis.'
@@ -92,7 +92,7 @@ const MainChartAnalysis = () => {
 
   return (
     <>
-      <Navbar/>
+      <Navbar />
       <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-sans text-white flex flex-col pt-20 md:pt-40">
 
         {/* Hero Section */}
@@ -123,7 +123,7 @@ const MainChartAnalysis = () => {
 
         <main className="flex-grow mx-auto px-4 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
+
             <div className="lg:sticky top-8 self-start">
               <ImageUploader
                 onImageUpload={handleImageUpload}
@@ -162,7 +162,7 @@ const MainChartAnalysis = () => {
               {/* Background decoration */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl" />
-              
+
               <div className="relative z-10">
                 {/* Icon */}
                 <div className="flex justify-center mb-6">

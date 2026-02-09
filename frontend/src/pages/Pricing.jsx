@@ -7,12 +7,13 @@ import CryptoPayment from '../components/payments/CryptoPayment'
 const plans = [
   {
     id: 'starter',
+    paymentId: '1599637634',
     name: 'Starter Pack',
-    price: 19,
+    price: 29,
     currency: '$',
-    tokens: 30,
-    bonus: 0,
-    total: 30,
+    tokens: 100,
+    bonus: 10,
+    total: 110,
     features: [
       'New minimum entry point',
       'Feels premium, filters serious users',
@@ -22,12 +23,13 @@ const plans = [
   },
   {
     id: 'trader',
+    paymentId: '1698284236',
     name: 'Trader Pack',
-    price: 29,
+    price: 49,
     currency: '$',
-    tokens: 70,
-    bonus: 10,
-    total: 80,
+    tokens: 200,
+    bonus: 20,
+    total: 220,
     features: [
       'Most users upgrade here',
       'Better value than starter',
@@ -37,12 +39,13 @@ const plans = [
   },
   {
     id: 'pro',
+    paymentId: '389856424',
     name: 'Pro Pack',
-    price: 49,
+    price: 99,
     currency: '$',
-    tokens: 150,
-    bonus: 30,
-    total: 180,
+    tokens: 500,
+    bonus: 50,
+    total: 550,
     features: [
       'Extremely attractive',
       'High revenue',
@@ -53,12 +56,13 @@ const plans = [
   },
   {
     id: 'elite',
+    paymentId: '323923961',
     name: 'Elite Pack',
-    price: 79,
+    price: 199,
     currency: '$',
-    tokens: 300,
-    bonus: 70,
-    total: 370,
+    tokens: 1200,
+    bonus: 150,
+    total: 1350,
     features: [
       'Designed for prop traders & heavy users',
       'Very profitable for you',
@@ -68,12 +72,13 @@ const plans = [
   },
   {
     id: 'ultimate',
+    paymentId: '1281595844',
     name: 'Ultimate Mega Pack',
-    price: 129,
+    price: 399,
     currency: '$',
-    tokens: 600,
-    bonus: 150,
-    total: 750,
+    tokens: 2500,
+    bonus: 400,
+    total: 2900,
     features: [
       'One-time large revenue',
       'For serious professional traders',
@@ -81,6 +86,23 @@ const plans = [
     ],
     popular: false,
     badge: 'Lifetime'
+  },
+  {
+    id: 'titan',
+    paymentId: '541559712',
+    name: 'Titan Pack',
+    price: 699,
+    currency: '$',
+    tokens: 5000,
+    bonus: 1000,
+    total: 6000,
+    features: [
+      'Maximum value',
+      'For institutional grade trading',
+      'Unrestricted access'
+    ],
+    popular: false,
+    badge: 'Exclusive'
   }
 ]
 
@@ -112,7 +134,7 @@ export default function ModernPricing() {
     console.log(" window.location.origin", window.location.origin)
     try {
       const res = await axios.post(`${BaseUrl}/billing/subscribe`, {
-        tier: selectedPlan.id,
+        tier: selectedPlan.paymentId || selectedPlan.id,
         paymentProvider: provider,           // stripe / razorpay / crypto
         successUrl: window.location.origin + "/success",
         cancelUrl: window.location.origin + "/cancel"

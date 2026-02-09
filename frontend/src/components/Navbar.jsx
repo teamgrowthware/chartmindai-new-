@@ -173,19 +173,18 @@ export default function Navbar() {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="md:hidden backdrop-blur-lg bg-white/5 border-t border-white/10 px-4 py-4 space-y-4"
+          className="md:hidden flex flex-col backdrop-blur-lg bg-white/5 border-t border-white/10 px-4 py-4 space-y-4"
         >
-          {navLinks
-            .filter(link => true) // Show all links in mobile menu
-            .map(link => (
-              <NavItem
-                key={link.name}
-                label={link.name}
-                path={link.path}
-                onClick={(e) => handleNavClick(e, link.path)}
-              />
-            ))
-          }
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.path}
+              onClick={(e) => handleNavClick(e, link.path)}
+              className="block text-gray-300 hover:text-white py-2 text-base font-medium transition-colors"
+            >
+              {link.name}
+            </a>
+          ))}
           {/* MOBILE TOKEN + AUTH */}
           <div className="pt-4 border-t border-white/10 space-y-3">
 

@@ -5,6 +5,8 @@ import { AnalysisDisplay } from './components/AnalysisDisplay';
 import { analyzeChart } from './services/geminiService';
 import { InitialStateDisplay } from './components/InitialStateDisplay';
 import { Footer } from './components/Footer';
+import { useAnalyzerUsage } from '../../hooks/useAnalyzerUsage';
+import { LimitPopup } from '../../components/LimitPopup';
 
 const AiAnalyzer = () => {
   const [image, setImage] = useState(null);
@@ -12,6 +14,9 @@ const AiAnalyzer = () => {
   const [groundingSources, setGroundingSources] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showLimitPopup, setShowLimitPopup] = useState(false);
+
+  const { usageCount, checkAndIncrement, isSubscribed } = useAnalyzerUsage();
 
   const handleImageUpload = (file) => {
     const reader = new FileReader();
@@ -29,6 +34,13 @@ const AiAnalyzer = () => {
   const handleAnalyze = useCallback(async () => {
     if (!image) return;
 
+    // Check limit
+    const allowed = await checkAndIncrement();
+    if (!allowed) {
+      setShowLimitPopup(true);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     setAnalysis(null);
@@ -43,7 +55,7 @@ const AiAnalyzer = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [image]);
+  }, [image, checkAndIncrement]);
 
   const handleReset = () => {
     setImage(null);
@@ -56,6 +68,13 @@ const AiAnalyzer = () => {
     <div className="min-h-screen bg-brand-bg font-sans flex flex-col">
       <Header />
       <main className="flex-grow container mx-auto p-4 md:p-8">
+        {!isSubscribed && (
+          <div className="text-center mb-4">
+            <p className="text-sm text-slate-500">
+              Free trials remaining: <span className="text-cyan-400 font-bold">{Math.max(0, 3 - usageCount)}</span>/3
+            </p>
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="lg:sticky top-8 self-start">
             <ImageUploader
@@ -82,6 +101,7 @@ const AiAnalyzer = () => {
         </div>
       </main>
       <Footer />
+      <LimitPopup show={showLimitPopup} onClose={() => setShowLimitPopup(false)} />
     </div>
   );
 };

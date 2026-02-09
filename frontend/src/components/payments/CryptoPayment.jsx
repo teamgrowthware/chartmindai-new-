@@ -22,7 +22,7 @@ export default function CryptoPayment({ plan, trial, onSuccess, onCancel }) {
       const response = await axios.post(`${BaseUrl}/api/crypto/create-payment`, {
         amount: plan.price,
         currency: 'USD',
-        planId: plan.id,
+        planId: plan.paymentId || plan.id,
         userId: currentUser.uid,
         trial: trial
       })

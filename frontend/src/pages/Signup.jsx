@@ -41,8 +41,12 @@ export default function Signup() {
 
     } catch (error) {
       console.log("Signup Error:", error);
-      const msg = error.message.replace('Firebase: ', '');
-      alert(msg);
+      if (error.code === 'auth/email-already-in-use') {
+        alert("This email is already registered. Please log in instead.");
+      } else {
+        const msg = error.message.replace('Firebase: ', '');
+        alert(msg);
+      }
     } finally {
       setLoading(false);
     }

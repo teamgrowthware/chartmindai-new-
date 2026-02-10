@@ -57,11 +57,11 @@ export default function Signup() {
     setLoading(true)
     try {
       await loginWithGoogle()
-      toast.success('Account created successfully!')
+      //      toast.success('Account created successfully!')
       navigate('/dashboard')
     } catch (error) {
       console.error('Google signup error:', error)
-      toast.error(error.message || 'Failed to sign up with Google.')
+      alert(error.message || 'Failed to sign up with Google.')
     } finally {
       setLoading(false)
     }

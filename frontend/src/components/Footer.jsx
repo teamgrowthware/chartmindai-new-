@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Twitter, Send, MessageCircle } from 'lucide-react'
 import Logo from '../assets/Aitrade.png'
@@ -121,8 +122,8 @@ export default function Footer() {
           transition={{ delay: 0.4 }}
         >
           <div className="flex justify-center space-x-6 mb-4 text-sm text-gray-400">
-            <a href="/termandcondition" className="hover:text-white transition-colors">Terms & Conditions</a>
-            <a href="/privacyandpolicy" className="hover:text-white transition-colors">Privacy Policy</a>
+            <Link to="/termandcondition" className="hover:text-white transition-colors">Terms & Conditions</Link>
+            <Link to="/privacyandpolicy" className="hover:text-white transition-colors">Privacy Policy</Link>
           </div>
           <p className="text-gray-500 text-sm">
             © {currentYear} Tradorr.com | hello@tradorr.com

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Loader, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import axios from "axios";
+import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { BaseUrl } from '../config/BaseUrl';
@@ -26,8 +27,17 @@ export default function Login() {
       navigate("/dashboard");
     } catch (error) {
       console.log("Login error:", error);
-      const msg = error.message.replace('Firebase: ', '');
-      alert(msg);
+      let msg = "Failed to login";
+      if (error.code === 'auth/invalid-credential' || error.message.includes('invalid-credential')) {
+        msg = "Invalid email or password";
+      } else if (error.code === 'auth/user-not-found') {
+        msg = "No account found with this email";
+      } else if (error.code === 'auth/wrong-password') {
+        msg = "Incorrect password";
+      } else {
+        msg = error.message.replace('Firebase: ', '');
+      }
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -40,8 +50,9 @@ export default function Login() {
       const user = await loginWithGoogle();
       localStorage.setItem("userEmail", user?.user?.email);
       navigate("/dashboard");
+      navigate("/dashboard");
     } catch (error) {
-      alert("Failed to login with Google");
+      toast.error("Failed to login with Google");
     } finally {
       setLoading(false);
     }
@@ -120,10 +131,10 @@ export default function Login() {
                   if (!email) return alert("Please enter your email first");
                   try {
                     await resetPassword(email);
-                    alert("Password reset email sent! Check your inbox.");
+                    toast.success("Password reset email sent! Check your inbox.");
                   } catch (e) {
                     const msg = e.message.replace('Firebase: ', '');
-                    alert("Error: " + msg);
+                    toast.error("Error: " + msg);
                   }
                 }}
                 className="text-sm text-blue-400 hover:text-blue-300 transition-colors"

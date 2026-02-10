@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useSubscription } from '../../context/SubscriptionContext'
 import toast from 'react-hot-toast'
@@ -7,6 +8,7 @@ import { BaseUrl } from '../../config/BaseUrl'
 
 export default function CryptoPayment({ plan, trial, onSuccess, onCancel }) {
   const { currentUser } = useAuth()
+  const navigate = useNavigate()
   const { updateSubscription } = useSubscription()
   const [paymentUrl, setPaymentUrl] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -17,6 +19,12 @@ export default function CryptoPayment({ plan, trial, onSuccess, onCancel }) {
   }, [])
 
   const initializePayment = async () => {
+    if (!currentUser) {
+      toast.error('Please log in to continue')
+      navigate('/login')
+      return
+    }
+
     setLoading(true)
     try {
       const response = await axios.post(`${BaseUrl}/api/crypto/create-payment`, {
